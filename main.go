@@ -10,7 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"exchange-rates-cbr/handlers"
+	"exchange-rates/handlers"
+	"exchange-rates/pkg/rater"
 
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -27,9 +28,10 @@ func init() {
 }
 
 func main() {
+	r := rater.NewRater()
 	sm := mux.NewRouter()
 
-	apiHandlers := handlers.NewApiHandlers()
+	apiHandlers := handlers.NewApiHandlers(r)
 	apiRouter := sm.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/rates", apiHandlers.Index).Queries("date", "{date}").Methods(http.MethodGet)
 
